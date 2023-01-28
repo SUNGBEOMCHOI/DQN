@@ -1,0 +1,36 @@
+device: cpu
+train:
+  batch_size: 64
+  train_epochs: 300
+  loss:
+    - mseloss
+  optim:
+    name: adam
+    learning_rate: 0.0001
+    others: 
+  max_eps: 0.9
+  min_eps: 0.1
+  eps_decay: 200
+  discount_factor: 0.99
+  target_update_period: 100
+  target_update_ratio: 0.01
+  memory_length: 10000
+  model_path: ./pretrained
+  progress_path: ./train_progress
+  plot_epochs: 50
+model:
+  architecture:
+    - Linear:
+        args: [4, 128]
+    - Tanh:
+    - Linear:
+        args: [128, 128]
+    - Tanh:
+    - Linear:
+        args: [128, 2]
+env:
+  name: CartPole
+test:
+  video_path: ./video
+  model_path: ./pretrained/model_200.pt
+
