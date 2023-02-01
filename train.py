@@ -103,13 +103,13 @@ def train(args, cfg):
             state = next_state
             if len(replay['state']) > batch_size:
                 idxs = np.random.choice(len(replay['state']), batch_size)
-                states = torch.tensor(np.array(replay['state']))[idxs]
-                actions = torch.tensor(replay['action'])[idxs]
-                rewards = torch.tensor(replay['reward'])[idxs]
-                next_states = torch.tensor(np.array(replay['next_state']))[idxs]
-                dones = torch.tensor(replay['done'])[idxs]                
+                states = torch.tensor(np.array(replay['state']), device=device)[idxs]
+                actions = torch.tensor(replay['action'], device=device)[idxs]
+                rewards = torch.tensor(replay['reward'], device=device)[idxs]
+                next_states = torch.tensor(np.array(replay['next_state']), device=device)[idxs]
+                dones = torch.tensor(replay['done'], device=device)[idxs]                
 
-                target_q = torch.zeros(batch_size)
+                target_q = torch.zeros(batch_size, device=device)
                 target_q[dones] = rewards[dones]
                 not_done_states = next_states[~dones]
                 target_q[~dones] = discount_factor*torch.amax(target_net(not_done_states), dim=-1) + rewards[~dones]

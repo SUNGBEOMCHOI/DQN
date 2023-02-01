@@ -1,4 +1,4 @@
-device: cpu
+device: cuda
 train:
   batch_size: 128
   train_epochs: 1000
@@ -10,8 +10,8 @@ train:
     others: 
   max_eps: 0.9
   min_eps: 0.1
-  eps_decay: 200
-  discount_factor: 0.99
+  eps_decay: 500
+  discount_factor: 0.999
   target_update_period: 100
   target_update_ratio: 0.01
   memory_length: 10000
@@ -21,31 +21,31 @@ train:
 model:
   architecture:
     - Conv2d:
-        args: [4, 16]
-        kernel_size: 5
-        stride: 2
-    - BatchNorm2d:
-        args: [16]
-    - ReLU:
-    - Conv2d:
-        args: [16, 32]
-        kernel_size: 5
-        stride: 2
+        args: [4, 32]
+        kernel_size: 8
+        stride: 4
     - BatchNorm2d:
         args: [32]
     - ReLU:
     - Conv2d:
-        args: [32, 32]
-        kernel_size: 5
+        args: [32, 64]
+        kernel_size: 4
         stride: 2
     - BatchNorm2d:
-        args: [32]
+        args: [64]
+    - ReLU:
+    - Conv2d:
+        args: [64, 64]
+        kernel_size: 3
+        stride: 1
+    - BatchNorm2d:
+        args: [64]
     - ReLU:
     - AdaptiveAvgPool2d:
-        args: [4]
+        args: [2]
     - Flatten:
     - Linear:
-        args: [512, 4]
+        args: [256, 4]
 env:
   name: Breakout
 

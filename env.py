@@ -155,7 +155,7 @@ class Breakout(gym.Env):
         frames.append(state)
         self.frames.append(self.render())
         for _ in range(3):
-            state, reward, _, _ = self.env.step(1)
+            state, reward, _, _ = self.env.step(0)
             frames.append(state)
             self.total_reward += reward
             self.frames.append(self.render())
@@ -201,21 +201,9 @@ class Breakout(gym.Env):
 if __name__ == "__main__":
     env = Env.make('Breakout')
     state = env.reset()
-    plt.imshow(state[0])
-    plt.show()
-    plt.imshow(state[1])
-    plt.show()
-    plt.imshow(state[2])
-    plt.show()
-    plt.imshow(state[3])
-    plt.show()
-    for _ in range(3):
-        state, _, _, _ = env.step(2)
-        plt.imshow(state[0])
-        plt.show()
-        plt.imshow(state[1])
-        plt.show()
-        plt.imshow(state[2])
-        plt.show()
-        plt.imshow(state[3])
-        plt.show()
+    done = False
+    timestep = 0
+    while not done:
+        timestep += 1
+        state, _, done, _ = env.step(0)
+    print(timestep)
