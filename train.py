@@ -82,8 +82,6 @@ def train(args, cfg):
     for epoch in range(start_epoch, train_epochs+1):
         total_loss = 0.0
         state = env.reset()
-        if epoch % 20 == 1:
-            env.save_video(model=policy_net, video_path=f'./video/breakout_{epoch}.mp4')
         done, time_step = False, 0
         eps = max(max_eps-epoch*((max_eps-min_eps)/eps_decay), min_eps)
         while not done:
@@ -131,7 +129,7 @@ def train(args, cfg):
 
         history['loss'].append(total_loss/time_step)
         if epoch > 50:
-            total_reward, q_value = validation(env, policy_net)
+            total_reward, q_value = validation(env, policy_net, epoch)
         else:
             total_reward, q_value = env.total_reward, 0.0
         history['score'].append(total_reward)
@@ -143,11 +141,12 @@ def train(args, cfg):
             pass
         
 
-def validation(env, model):
+def validation(env, model, epoch):
     total_q_value = 0.0
     done = False
     state = env.reset()
-    # env.save_video(model=model, video_path='./video/breakout.mp4')
+    if epoch % 20 == 1:
+        env.save_video(model=model, video_path=f'./video/breakout_{epoch}.mp4')
     while not done:
         with torch.no_grad():
             action = model.get_action(state)

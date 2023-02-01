@@ -127,9 +127,6 @@ class Breakout(gym.Env):
             frames.append(state)
             self.frames.append(self.render())
             self.total_reward += reward
-            if info['lives'] != lives:
-                reward = 0.0
-                lives = info['lives']
             sum_reward += reward
             if done:
                 break
