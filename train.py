@@ -82,8 +82,8 @@ def train(args, cfg):
     for epoch in range(start_epoch, train_epochs+1):
         total_loss = 0.0
         state = env.reset()
-        if epoch % 10 == 1:
-            env.save_video(model=policy_net, video_path='./video/breakout.mp4')
+        if epoch % 20 == 1:
+            env.save_video(model=policy_net, video_path=f'./video/breakout_{epoch}.mp4')
         done, time_step = False, 0
         eps = max(max_eps-epoch*((max_eps-min_eps)/eps_decay), min_eps)
         while not done:
@@ -91,7 +91,7 @@ def train(args, cfg):
             if eps < np.random.rand():
                 action = policy_net.get_action(state)
             else:
-                action = np.random.choice(2)
+                action = np.random.choice(4)
             next_state, reward, done, _ = env.step(action)
 
             replay['state'].append(copy.deepcopy(state))

@@ -113,6 +113,7 @@ class Breakout(gym.Env):
 
         frames = []
         sum_reward = 0.0
+        lives = 5
         # state, reward, done, info = self.env.step(action)
         # self.total_reward += reward
         # sum_reward += reward
@@ -125,14 +126,16 @@ class Breakout(gym.Env):
                 state, reward, done, info = self.env.step(0)
             frames.append(state)
             self.frames.append(self.render())
-            sum_reward += reward
             self.total_reward += reward
+            if info['lives'] != lives:
+                reward = 0.0
+                lives = info['lives']
+            sum_reward += reward
             if done:
                 break
 
         if done:
             state = np.zeros((4, 84, 84), dtype=np.float32)
-            sum_reward = -10.0
         else:
             state = self.preprocessing(np.array(frames))
 
