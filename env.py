@@ -1,8 +1,10 @@
+import copy
+from collections import deque
+
 import numpy as np
 import gym
 import imageio
 from PIL import Image, ImageDraw, ImageFont
-import matplotlib.pyplot as plt
 
 from torchvision.transforms import transforms as T
 from torchvision.transforms.functional import crop
@@ -101,47 +103,27 @@ class Breakout(gym.Env):
         self.is_save_video = False
         self.video_path = ''
         self.frames = []
+        self.four_frames = deque(maxlen=4)
 
     def step(self, action):
-        # if self.is_save_video:
-        #     image = self.render(mode='rgb_array')
-        #     image = self.edit_image(image, action)
-        #     self.frames.append(image)
-
-        self.timestep += 1
+        self.timestep += 1   
         
-
-        frames = []
-        sum_reward = 0.0
-        lives = 5
-        # state, reward, done, info = self.env.step(action)
-        # self.total_reward += reward
-        # sum_reward += reward
-        # frames.append(state)
-        # self.frames.append(self.render())
-        for idx in range(4):
-            if idx < 1:
-                state, reward, done, info = self.env.step(action)
-            else:
-                state, reward, done, info = self.env.step(0)
-            frames.append(state)
-            self.frames.append(self.render())
-            self.total_reward += reward
-            sum_reward += reward
-            if done:
-                break
+        state, reward, done, info = self.env.step(action)
+        self.four_frames.append(state)
+        self.frames.append(self.render())
+        self.total_reward += reward
 
         if done:
             state = np.zeros((4, 84, 84), dtype=np.float32)
         else:
-            state = self.preprocessing(np.array(frames))
+            state = self.preprocessing(self.four_frames)
 
         if self.is_save_video and done:
             with imageio.get_writer(self.video_path, fps=30, macro_block_size = None) as video:
                 for frame in self.frames:
                     video.append_data(frame)
 
-        return state, sum_reward, done, info
+        return state, reward, done, info
     
     def reset(self):
         self.total_reward = 0.0
@@ -150,17 +132,16 @@ class Breakout(gym.Env):
         self.video_path = ''
         self.frames = []
 
-        frames = []
         state = self.env.reset()
-        frames.append(state)
         self.frames.append(self.render())
+        self.four_frames.append(state)
         for _ in range(3):
             state, reward, _, _ = self.env.step(0)
-            frames.append(state)
+            self.four_frames.append(state)
             self.total_reward += reward
             self.frames.append(self.render())
 
-        state = self.preprocessing(np.array(frames))
+        state = self.preprocessing(self.four_frames)
         return state
 
     def render(self, mode='rgb_array'):

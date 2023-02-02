@@ -1,4 +1,4 @@
-device: cpu
+device: cuda
 train:
   batch_size: 128
   train_epochs: 1000
