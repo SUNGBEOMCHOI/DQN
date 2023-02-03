@@ -1,6 +1,6 @@
 device: cuda
 train:
-  batch_size: 128
+  batch_size: 64
   train_epochs: 1000
   loss:
     - mseloss
@@ -41,11 +41,12 @@ model:
     - BatchNorm2d:
         args: [64]
     - ReLU:
-    - AdaptiveAvgPool2d:
-        args: [2]
     - Flatten:
     - Linear:
-        args: [256, 4]
+        args: [3136, 512]
+    - ReLU:
+    - Linear:
+        args: [512, 4]
 env:
   name: Breakout
 test:

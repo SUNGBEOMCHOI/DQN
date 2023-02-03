@@ -114,7 +114,7 @@ def train(args, cfg):
 
                 pred_q = torch.gather(policy_net(states.detach()), dim=1, index=actions.unsqueeze(-1).detach()).squeeze(-1)
                 loss = criterion_list[0](pred_q, target_q.detach())
-                optimizer.zero_grad()                
+                optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
                 total_loss += loss.item()
@@ -145,7 +145,7 @@ def validation(env, model, epoch):
     total_q_value = 0.0
     done = False
     state = env.reset()
-    if epoch % 20 == 1:
+    if epoch % 20 == 0:
         env.save_video(model=model, video_path=f'./video/breakout_{epoch}.mp4')
     while not done:
         with torch.no_grad():
